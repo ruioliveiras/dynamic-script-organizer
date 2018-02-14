@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -z "$INFRA_HOME" ]; then echo "var \$INFRA_HOME unset";  fi
+SOURCE_FILE=$(java -Dconfig=$1 -jar $INFRA_HOME/infra.jar -r)
+echo $SOURCE_FILE
