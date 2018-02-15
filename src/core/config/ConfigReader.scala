@@ -1,6 +1,6 @@
 package config
 
-import com.typesafe.config.{Config, ConfigException}
+import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 import model.{Command, ConfigElement, Infra}
 
 import scala.collection.JavaConversions._
@@ -10,13 +10,12 @@ import scala.collection.JavaConversions._
   * Created by ruioliveira at 2/12/18
   */
 class ConfigReader {
-  def read(c:Config):Infra = {
+  def read(configFile:String, c:Config):Infra = {
     val name = c.getString("name")
-    val sourceFile =c.getString("sourceFile")
 
     val configElem = this.readConfigElement(c.getConfig("struct"))
     val commands = this.readCommands(c.getConfig("commands"))
-    val i = Infra(name, sourceFile, commands , configElem)
+    val i = Infra(name, configFile + ".source", commands , configElem)
     i
   }
 
@@ -50,10 +49,13 @@ class ConfigReader {
 
     commandKeys.map( k => k -> k).toMap
       .mapValues(config.getConfig)
+        .mapValues(config => config.withFallback(ConfigFactory.parseString("""help=""""")))
       .map{case (k, config) =>
+
         val typ = config.getString("type")
         val code = config.getString("code")
-        k -> Command(k, typ, code)
+        val help = config.getString("help")
+        k -> Command(k, help,typ, code)
       }
   }
 

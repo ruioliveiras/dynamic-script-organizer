@@ -11,10 +11,26 @@ object Main{
   def main(args:Array[String]):Unit = {
     val config = System.getProperty("config")
     val cmd = args.apply(0)
+    val cmdFlag = if (args.size > 1) {
+      Option(args.apply(1))
+    } else {
+      None
+    }
     val main = new Application(config)
 
-    if (cmd == "-r") {
-      main.initRegenerate()
+    if (cmd.startsWith("-")) {
+      if (cmd == "-r") {
+        main.initRegenerate()
+        return
+      }else if (cmd == "-d") {
+        main.init()
+        main.debug()
+        return
+      }
+    }
+    if (cmdFlag.isDefined && cmdFlag.get == "-h") {
+      main.init()
+      main.help(cmd)
       return
     }
     main.init()
@@ -36,6 +52,18 @@ class Application(configFile:String){
 
   def initRegenerate(): Unit ={
     infra = configProvider.regenerate(configFile)
+    loadAlias.writeAlias(configFile, infra)
+  }
+
+  def help(cmd:String):Unit = {
+    val execution = infra.execute(cmd)
+    val command = infra.commands(execution.cmd)
+
+    println(command.help)
+  }
+
+  def debug(): Unit = {
+
   }
 
   def exec(token:String, args:List[String])(implicit resultWriter:Writer) = {

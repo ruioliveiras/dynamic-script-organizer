@@ -3,10 +3,11 @@
 
 package object model {
 
-  case class Command(name:String, typ:String, code:String)
+  case class Command(name:String, help:String, typ:String, code:String)
   case class Infra(name:String, sourceFile:String, commands:Map[String, Command], config:ConfigElement) {
     def execute(cmd:String) = config.execute(cmd)
     def jarFile:String = System.getenv("INFRA_HOME") + "/infra.jar"
+    def infraBash:String = System.getenv("INFRA_HOME") + "/infra-bash"
   }
   case class ConfigElement(fields:Map[String, Map[String, ConfigElement]], extras:Map[String, String], cmds:Set[String]) {
     lazy val edges:Map[String, (String, ConfigElement)] = fields.flatMap { case (varName, map) => map.map { case (code, config) => (code, (varName, config)) }.toList }

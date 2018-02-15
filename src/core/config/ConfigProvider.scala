@@ -18,7 +18,7 @@ class ConfigProvider {
 
   def regenerate(configFile:String): Infra = {
     val config = ConfigFactory.parseFile(new File(configFile)).resolve()
-    val infra = reader.read(config)
+    val infra = reader.read(configFile, config)
     cache.store(configFile, infra)
     infra
   }

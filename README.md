@@ -8,7 +8,7 @@
   life
 ## Quick Installation
 
-  1. Download the zip in the dist folder, unzip it in your HOME
+  1. [Download the zip](https://github.com/ruioliveiras/dynamic-script-organizer/raw/master/infrastructure-script-organizer.zip) in the dist folder, unzip it in your HOME
   2. In the `.bashrc` create a environment variable `INFRA_HOME`:
     ````bash
     export INFRA_HOME=$HOME/infrastructure-script-organizer

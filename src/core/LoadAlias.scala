@@ -24,6 +24,8 @@ class LoadAlias()(implicit main:Application) {
           implicit val writer = new StringWriter()
           main.exec(s"$path$cmd", List())
           writer.getBuffer.toString
+        case "executor" =>
+          s"${infra.infraBash} '$configFile' $path$cmd"
         case _ =>
           s"java -Dconfig=$configFile -jar ${infra.jarFile} $path$cmd"
       }

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+CONFIG_FILE="$1"
+shift;
+
+COMMNAD="$1"
+shift;
+
+debug=""
+if [ "$1" == "-p" ]; then
+  debug=1
+  shift;
+fi
+if [ "$1" == "-h" ]; then
+  debug=1
+fi
+
+
+OUTPUT="$(java -Dconfig=$CONFIG_FILE -jar $INFRA_HOME/infra.jar  "$COMMNAD" "$@")"
+if [ "$debug" == "1" ]; then
+    echo $OUTPUT
+else
+    eval $OUTPUT
+fi
