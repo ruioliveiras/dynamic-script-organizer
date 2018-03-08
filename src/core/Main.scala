@@ -67,10 +67,11 @@ class Application(configFile:String){
   }
 
   def exec(token:String, args:List[String])(implicit resultWriter:Writer) = {
-    val argsData = args.zipWithIndex.map{case (arg, i) => s"arg$i" -> arg}.toMap
     val execution = infra.execute(token)
     val command = infra.commands(execution.cmd)
+    // .mustacheData ++ argsData ++ Map("args" -> args.map(x => s"'$x'").mkString(" ")
+    execution.withArguments(args)
     // render command
-    mustache.render(command.code, execution.mustacheData ++ argsData ++ Map("args" -> args.map(x => s"'$x'").mkString(" ")))
+    mustache.render(command.code, execution)
   }
 }

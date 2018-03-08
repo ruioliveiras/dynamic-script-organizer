@@ -9,7 +9,7 @@ package object model {
     def jarFile:String = System.getenv("INFRA_HOME") + "/infra.jar"
     def infraBash:String = System.getenv("INFRA_HOME") + "/infra-bash"
   }
-  case class ConfigElement(fields:Map[String, Map[String, ConfigElement]], extras:Map[String, String], cmds:Set[String]) {
+  case class ConfigElement(fields:Map[String/*Fields*/, Map[String /*Code*/, ConfigElement]], extras:Map[String, String], cmds:Set[String], name:String) {
     lazy val edges:Map[String, (String, ConfigElement)] = fields.flatMap { case (varName, map) => map.map { case (code, config) => (code, (varName, config)) }.toList }
 
     def execute(cmd:String):Execution = {
@@ -17,18 +17,24 @@ package object model {
     }
     protected def readPath(token:Array[String], i:Int):Execution = {
       if (token.size - 1 == i) {
-        return Execution(token(i), Map())
+        return Execution(token(i), Map(), List())
       }
 
       val (fieldName, configElem) = edges(token(i))
       val exec = configElem.readPath(token, i + 1)
-      exec.withData(Map(fieldName -> configElem.extras))
+      exec.addData(fieldName, configElem)
     }
   }
 
 
-  case class Execution(cmd:String, mustacheData:Map[String /*varname*/, Map[String, String] /*extas*/ ]) {
-    def withData(data:Map[String, Map[String, String]]) = this.copy(mustacheData = this.mustacheData ++ data)
+  case class Execution(cmd:String, mustacheData:Map[String /*varname*/, ConfigElement], varOrder:List[String], args:List[String] = List()) {
+    def addData(varName:String, elem:ConfigElement) =
+      this.copy(mustacheData = this.mustacheData.+(varName -> elem), varOrder = this.varOrder :+ varName)
+
+    def withArguments(args:List[String]) = {
+      this.copy(args = args)
+    }
+    //def withData(data:Map[String, Map[String, String]]) = this.copy(mustacheData = this.mustacheData ++ data)
   }
 
 

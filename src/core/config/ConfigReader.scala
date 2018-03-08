@@ -13,13 +13,13 @@ class ConfigReader {
   def read(configFile:String, c:Config):Infra = {
     val name = c.getString("name")
 
-    val configElem = this.readConfigElement(c.getConfig("struct"))
+    val configElem = this.readConfigElement(c.getConfig("struct"), "root")
     val commands = this.readCommands(c.getConfig("commands"))
     val i = Infra(name, configFile + ".source", commands , configElem)
     i
   }
 
-  private def readConfigElement(c:Config):ConfigElement = {
+  private def readConfigElement(c:Config, name:String):ConfigElement = {
     val cmds = c.getStringList("cmds").toList
     val extras = this.readExtras(c)
     val fieldKeys = this.readKeys(c)(Set("cmds"))
@@ -37,11 +37,11 @@ class ConfigReader {
       .mapValues(c.getConfig)
       .mapValues(x => (x, this.readKeys(x)(Set())))
       .mapValues{case (config, keys) =>
-        keys.map(key =>key -> config.getConfig(key)).toMap.mapValues(readConfigElement)
+        keys.map(key => key -> readConfigElement(config.getConfig(key), key)).toMap
       }
     //println(fields)
 
-    ConfigElement(fields, extras, cmds.toSet)
+    ConfigElement(fields, extras, cmds.toSet, name)
   }
 
   private def readCommands(config: Config):Map[String, Command] = {
