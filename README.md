@@ -12,6 +12,6 @@
 2. In the `.bashrc` create a environment variable `INFRA_HOME`:
     ````bash
     export INFRA_HOME=$HOME/infrastructure-script-organizer
-    source $($INFRA_HOME/setup.source $INFRA_HOME/example-config.conf)
+    source $($INFRA_HOME/setup.source $INFRA_HOME/example-ruioliveiras.scripts.config.conf)
     ````
-    You can use your own config rather than `example-config.conf` of course.
+    You can use your own ruioliveiras.scripts.config rather than `example-ruioliveiras.scripts.config.conf` of course.

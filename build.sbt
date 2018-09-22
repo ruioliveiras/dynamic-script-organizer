@@ -17,5 +17,6 @@ libraryDependencies += "io.suzaku" %% "boopickle" % "1.2.6"
 libraryDependencies += "com.github.spullara.mustache.java" % "compiler" % "0.9.5"
 
 
-mainClass in assembly := Some("Main")
+mainClass in assembly := Some("ruioliveiras.scripts.Main")
+
 assemblyJarName in assembly := "../../dist/infra.jar"
